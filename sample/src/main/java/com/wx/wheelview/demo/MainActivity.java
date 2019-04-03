@@ -18,15 +18,15 @@ package com.wx.wheelview.demo;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.View;
-
 import com.wx.wheelview.adapter.ArrayWheelAdapter;
 import com.wx.wheelview.adapter.SimpleWheelAdapter;
 import com.wx.wheelview.common.WheelData;
 import com.wx.wheelview.util.WheelUtils;
 import com.wx.wheelview.widget.WheelView;
+import com.wx.wheelview.widget.WheelView.OnWheelScrollingListener;
 import com.wx.wheelview.widget.WheelViewDialog;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,9 +48,96 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initWheel1();
-        initWheel2();
+//        initWheel1();
+//        initWheel2();
         initWheel3();
+    }
+
+    public void showDialog(View view) {
+        WheelViewDialog dialog = new WheelViewDialog(this);
+        dialog.setTitle("wheelview dialog").setItems(createArrays()).setButtonText("确定").setDialogStyle(Color
+                .parseColor("#6699ff")).setCount(5).show();
+    }
+
+    private ArrayList<String> createArrays() {
+        ArrayList<String> list = new ArrayList<String>();
+        for (int i = 0; i < 20; i++) {
+            list.add("item" + i);
+        }
+        return list;
+    }
+
+    private HashMap<String, List<String>> createChildDatas() {
+        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+        String[] strings = {"哈尔滨", "齐齐哈尔", "大庆", "长春", "吉林", "沈阳", "大连", "鞍山", "抚顺"};
+        String[] s1 = {"道里区", "道外区", "南岗区", "香坊区"};
+        String[] s2 = {"龙沙区", "建华区", "铁锋区"};
+        String[] s3 = {"红岗区", "大同区"};
+        String[] s11 = {"南关区", "朝阳区"};
+        String[] s12 = {"龙潭区"};
+        String[] s21 = {"和平区", "皇姑区", "大东区", "铁西区"};
+        String[] s22 = {"中山区", "金州区"};
+        String[] s23 = {"铁东区", "铁西区"};
+        String[] s24 = {"新抚区", "望花区", "顺城区"};
+        String[][] ss = {s1, s2, s3, s11, s12, s21, s22, s23, s24};
+        for (int i = 0; i < strings.length; i++) {
+            map.put(strings[i], Arrays.asList(ss[i]));
+        }
+        return map;
+    }
+
+    private ArrayList<WheelData> createDatas() {
+        ArrayList<WheelData> list = new ArrayList<WheelData>();
+        WheelData item;
+        for (int i = 0; i < 20; i++) {
+            item = new WheelData();
+            item.setId(R.mipmap.ic_launcher);
+            item.setName((i < 10) ? ("0" + i) : ("" + i));
+            list.add(item);
+        }
+        return list;
+    }
+
+    private ArrayList<String> createHours() {
+        ArrayList<String> list = new ArrayList<String>();
+        for (int i = 0; i < 24; i++) {
+            if (i < 10) {
+                list.add("0" + i);
+            } else {
+                list.add("" + i);
+            }
+        }
+        return list;
+    }
+
+    private List<String> createMainDatas() {
+        String[] strings = {"黑龙江", "吉林", "辽宁"};
+        return Arrays.asList(strings);
+    }
+
+    private ArrayList<String> createMinutes() {
+        ArrayList<String> list = new ArrayList<String>();
+        for (int i = 0; i < 60; i++) {
+            if (i < 10) {
+                list.add("0" + i);
+            } else {
+                list.add("" + i);
+            }
+        }
+        return list;
+    }
+
+    private HashMap<String, List<String>> createSubDatas() {
+        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+        String[] strings = {"黑龙江", "吉林", "辽宁"};
+        String[] s1 = {"哈尔滨", "齐齐哈尔", "大庆"};
+        String[] s2 = {"长春", "吉林"};
+        String[] s3 = {"沈阳", "大连", "鞍山", "抚顺"};
+        String[][] ss = {s1, s2, s3};
+        for (int i = 0; i < strings.length; i++) {
+            map.put(strings[i], Arrays.asList(ss[i]));
+        }
+        return map;
     }
 
     /**
@@ -143,6 +230,13 @@ public class MainActivity extends Activity {
             }
         });
 
+        simpleWheelView.setOnWheelScrollingListener(new OnWheelScrollingListener() {
+            @Override
+            public void onItemScrolled() {
+                ((Vibrator) getSystemService(VIBRATOR_SERVICE)).vibrate(50);
+            }
+        });
+
         myWheelView = (WheelView) findViewById(R.id.my_wheelview);
         myWheelView.setWheelAdapter(new MyWheelAdapter(this));
         myWheelView.setWheelSize(5);
@@ -154,94 +248,6 @@ public class MainActivity extends Activity {
         style.textColor = Color.DKGRAY;
         style.selectedTextColor = Color.GREEN;
         myWheelView.setStyle(style);
-    }
-
-    public void showDialog(View view) {
-        WheelViewDialog dialog = new WheelViewDialog(this);
-        dialog.setTitle("wheelview dialog").setItems(createArrays()).setButtonText("确定").setDialogStyle(Color
-                .parseColor("#6699ff")).setCount(5).show();
-    }
-
-    private List<String> createMainDatas() {
-        String[] strings = {"黑龙江", "吉林", "辽宁"};
-        return Arrays.asList(strings);
-    }
-
-    private HashMap<String, List<String>> createSubDatas() {
-        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
-        String[] strings = {"黑龙江", "吉林", "辽宁"};
-        String[] s1 = {"哈尔滨", "齐齐哈尔", "大庆"};
-        String[] s2 = {"长春", "吉林"};
-        String[] s3 = {"沈阳", "大连", "鞍山", "抚顺"};
-        String[][] ss = {s1, s2, s3};
-        for (int i = 0; i < strings.length; i++) {
-            map.put(strings[i], Arrays.asList(ss[i]));
-        }
-        return map;
-    }
-
-    private HashMap<String, List<String>> createChildDatas() {
-        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
-        String[] strings = {"哈尔滨", "齐齐哈尔", "大庆", "长春", "吉林", "沈阳", "大连", "鞍山", "抚顺"};
-        String[] s1 = {"道里区", "道外区", "南岗区", "香坊区"};
-        String[] s2 = {"龙沙区", "建华区", "铁锋区"};
-        String[] s3 = {"红岗区", "大同区"};
-        String[] s11 = {"南关区", "朝阳区"};
-        String[] s12 = {"龙潭区"};
-        String[] s21 = {"和平区", "皇姑区", "大东区", "铁西区"};
-        String[] s22 = {"中山区", "金州区"};
-        String[] s23 = {"铁东区", "铁西区"};
-        String[] s24 = {"新抚区", "望花区", "顺城区"};
-        String[][] ss = {s1, s2, s3, s11, s12, s21, s22, s23, s24};
-        for (int i = 0; i < strings.length; i++) {
-            map.put(strings[i], Arrays.asList(ss[i]));
-        }
-        return map;
-    }
-
-
-    private ArrayList<String> createHours() {
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < 24; i++) {
-            if (i < 10) {
-                list.add("0" + i);
-            } else {
-                list.add("" + i);
-            }
-        }
-        return list;
-    }
-
-    private ArrayList<String> createMinutes() {
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < 60; i++) {
-            if (i < 10) {
-                list.add("0" + i);
-            } else {
-                list.add("" + i);
-            }
-        }
-        return list;
-    }
-
-    private ArrayList<String> createArrays() {
-        ArrayList<String> list = new ArrayList<String>();
-        for (int i = 0; i < 20; i++) {
-            list.add("item" + i);
-        }
-        return list;
-    }
-
-    private ArrayList<WheelData> createDatas() {
-        ArrayList<WheelData> list = new ArrayList<WheelData>();
-        WheelData item;
-        for (int i = 0; i < 20; i++) {
-            item = new WheelData();
-            item.setId(R.mipmap.ic_launcher);
-            item.setName((i < 10) ? ("0" + i) : ("" + i));
-            list.add(item);
-        }
-        return list;
     }
 
 }
